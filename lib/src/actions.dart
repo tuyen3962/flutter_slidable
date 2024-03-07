@@ -143,6 +143,7 @@ class SlidableAction extends StatelessWidget {
     this.spacing = 4,
     this.label,
     this.borderRadius = BorderRadius.zero,
+    this.direction = Axis.vertical,
     this.padding,
   })  : assert(flex > 0),
         assert(icon != null || label != null),
@@ -166,9 +167,14 @@ class SlidableAction extends StatelessWidget {
   /// An icon to display above the [label].
   final IconData? icon;
 
+  ///
   final TextStyle? labelStyle;
 
+  ///
   final Widget? otherIcon;
+
+  ///
+  final Axis direction;
 
   /// The space between [icon] and [label] if both set.
   ///
@@ -216,16 +222,27 @@ class SlidableAction extends StatelessWidget {
 
     final child = children.length == 1
         ? children.first
-        : Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              ...children.map(
-                (child) => Flexible(
-                  child: child,
-                ),
+        : direction == Axis.vertical
+            ? Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  ...children.map(
+                    (child) => Flexible(
+                      child: child,
+                    ),
+                  )
+                ],
               )
-            ],
-          );
+            : Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  ...children.map(
+                    (child) => Flexible(
+                      child: child,
+                    ),
+                  )
+                ],
+              );
 
     return CustomSlidableAction(
       borderRadius: borderRadius,
