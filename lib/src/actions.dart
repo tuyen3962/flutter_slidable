@@ -1,3 +1,5 @@
+import 'dart:js_interop';
+
 import 'package:flutter/material.dart';
 
 import 'slidable.dart';
@@ -138,6 +140,7 @@ class SlidableAction extends StatelessWidget {
     this.autoClose = _kAutoClose,
     required this.onPressed,
     this.icon,
+    this.otherIcon,
     this.spacing = 4,
     this.label,
     this.borderRadius = BorderRadius.zero,
@@ -164,6 +167,8 @@ class SlidableAction extends StatelessWidget {
   /// An icon to display above the [label].
   final IconData? icon;
 
+  final Widget? otherIcon;
+
   /// The space between [icon] and [label] if both set.
   ///
   /// Defaults to 4.
@@ -186,6 +191,10 @@ class SlidableAction extends StatelessWidget {
       children.add(
         Icon(icon),
       );
+    }
+
+    if (otherIcon != null) {
+      otherIcon.add(otherIcon);
     }
 
     if (label != null) {
