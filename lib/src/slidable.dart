@@ -24,6 +24,7 @@ class Slidable extends StatefulWidget {
     this.closeOnScroll = true,
     this.startActionPane,
     this.endActionPane,
+    this.paddingAction,
     this.direction = Axis.horizontal,
     this.dragStartBehavior = DragStartBehavior.down,
     this.useTextDirection = true,
@@ -95,6 +96,8 @@ class Slidable extends StatefulWidget {
   ///
   ///  * [DragGestureRecognizer.dragStartBehavior], which gives an example for the different behaviors.
   final DragStartBehavior dragStartBehavior;
+
+  final EdgeInsets? paddingAction;
 
   /// The widget below this widget in the tree.
   ///
@@ -241,12 +244,15 @@ class _SlidableState extends State<Slidable>
       children: <Widget>[
         if (actionPane != null)
           Positioned.fill(
-            child: ClipRect(
-              clipper: _SlidableClipper(
-                axis: widget.direction,
-                controller: controller,
+            child: Padding(
+              padding: widget.paddingAction ?? const EdgeInsets.only(),
+              child: ClipRect(
+                clipper: _SlidableClipper(
+                  axis: widget.direction,
+                  controller: controller,
+                ),
+                child: actionPane,
               ),
-              child: actionPane,
             ),
           ),
         content,
