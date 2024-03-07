@@ -141,6 +141,7 @@ class SlidableAction extends StatelessWidget {
     required this.onPressed,
     this.icon,
     this.otherIcon,
+    this.labelStyle,
     this.spacing = 4,
     this.label,
     this.borderRadius = BorderRadius.zero,
@@ -166,6 +167,8 @@ class SlidableAction extends StatelessWidget {
 
   /// An icon to display above the [label].
   final IconData? icon;
+
+  final TextStyle? labelStyle;
 
   final Widget? otherIcon;
 
@@ -207,6 +210,7 @@ class SlidableAction extends StatelessWidget {
       children.add(
         Text(
           label!,
+          style: labelStyle,
           overflow: TextOverflow.ellipsis,
         ),
       );
