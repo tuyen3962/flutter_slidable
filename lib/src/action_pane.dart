@@ -51,6 +51,7 @@ class ActionPane extends StatefulWidget {
     this.dismissible,
     this.dragDismissible = true,
     this.openThreshold,
+    this.isStart = false,
     this.closeThreshold,
     this.radius,
     required this.children,
@@ -66,6 +67,8 @@ class ActionPane extends StatefulWidget {
   ///
   /// Must be between 0 (excluded) and 1.
   final double extentRatio;
+
+  final bool isStart;
 
   /// A widget which animates when the [Slidable] moves.
   final Widget motion;
@@ -234,7 +237,10 @@ class _ActionPaneState extends State<ActionPane> implements RatioConfigurator {
     }
 
     return ClipRRect(
-      borderRadius: BorderRadius.circular(widget.radius ?? 0),
+      borderRadius: BorderRadius.horizontal(
+        right: Radius.circular(!widget.isStart ? widget.radius ?? 0 : 0),
+        left: Radius.circular(widget.isStart ? 0 : widget.radius ?? 0),
+      ),
       child: _ActionPaneScope(
         actionPaneData: ActionPaneData(
           alignment: config.alignment,
