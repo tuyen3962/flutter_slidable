@@ -52,6 +52,7 @@ class ActionPane extends StatefulWidget {
     this.dragDismissible = true,
     this.openThreshold,
     this.closeThreshold,
+    this.radius,
     required this.children,
   })  : assert(extentRatio > 0 && extentRatio <= 1),
         assert(
@@ -84,6 +85,8 @@ class ActionPane extends StatefulWidget {
   ///
   /// By default this value is half the [extentRatio].
   final double? openThreshold;
+
+  final double? radius;
 
   /// The fraction of the total extent from where the [Slidable] will
   /// automatically close when the drag end.
@@ -230,15 +233,18 @@ class _ActionPaneState extends State<ActionPane> implements RatioConfigurator {
       child = widget.dismissible;
     }
 
-    return _ActionPaneScope(
-      actionPaneData: ActionPaneData(
-        alignment: config.alignment,
-        direction: config.direction,
-        fromStart: config.isStartActionPane,
-        extentRatio: widget.extentRatio,
-        children: widget.children,
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(widget.radius ?? 0),
+      child: _ActionPaneScope(
+        actionPaneData: ActionPaneData(
+          alignment: config.alignment,
+          direction: config.direction,
+          fromStart: config.isStartActionPane,
+          extentRatio: widget.extentRatio,
+          children: widget.children,
+        ),
+        child: child!,
       ),
-      child: child!,
     );
   }
 }

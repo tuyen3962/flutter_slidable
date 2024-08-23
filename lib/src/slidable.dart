@@ -28,6 +28,8 @@ class Slidable extends StatefulWidget {
     this.direction = Axis.horizontal,
     this.dragStartBehavior = DragStartBehavior.down,
     this.useTextDirection = true,
+    this.radiusContent,
+    this.controller,
     required this.child,
   }) : super(key: key);
 
@@ -37,6 +39,8 @@ class Slidable extends StatefulWidget {
   ///
   /// Defaults to true.
   final bool enabled;
+
+  final SlidableController? controller;
 
   /// Specifies to close this [Slidable] after the closest [Scrollable]'s
   /// position changed.
@@ -58,6 +62,8 @@ class Slidable extends StatefulWidget {
   /// When [direction] is [Axis.horizontal] and [useTextDirection] is true, the
   /// [startActionPane] is determined by the ambient [TextDirection].
   final ActionPane? startActionPane;
+
+  final double? radiusContent;
 
   /// A widget which is shown when the user drags the [Slidable] to the left or
   /// to the top.
@@ -129,6 +135,8 @@ class _SlidableState extends State<Slidable>
     with TickerProviderStateMixin, AutomaticKeepAliveClientMixin {
   late final SlidableController controller;
   late Animation<Offset> moveAnimation;
+  late double rightRadiusView = widget.radiusContent ?? 0;
+  late double leftRadiusView = widget.radiusContent ?? 0;
   late bool keepPanesOrder;
 
   @override
@@ -137,7 +145,7 @@ class _SlidableState extends State<Slidable>
   @override
   void initState() {
     super.initState();
-    controller = SlidableController(this)
+    controller = (widget.controller ?? SlidableController(this))
       ..actionPaneType.addListener(handleActionPanelTypeChanged);
   }
 
@@ -202,6 +210,16 @@ class _SlidableState extends State<Slidable>
             : Offset(0, end),
       ),
     );
+    if (end != 0) {
+      if (end < 0) {
+        rightRadiusView = 0;
+      } else {
+        leftRadiusView = 0;
+      }
+    } else {
+      rightRadiusView = widget.radiusContent ?? 0;
+      leftRadiusView = widget.radiusContent ?? 0;
+    }
   }
 
   Widget? get actionPane {
@@ -236,7 +254,13 @@ class _SlidableState extends State<Slidable>
       child: SlidableAutoCloseBehaviorInteractor(
         groupTag: widget.groupTag,
         controller: controller,
-        child: widget.child,
+        child: ClipRRect(
+          borderRadius: BorderRadius.horizontal(
+            left: Radius.circular(leftRadiusView),
+            right: Radius.circular(rightRadiusView),
+          ),
+          child: widget.child,
+        ),
       ),
     );
 
