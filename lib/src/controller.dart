@@ -209,7 +209,7 @@ class SlidableController {
   /// [ActionPaneType.start].
   double get ratio => _animationController.value * direction.value;
   set ratio(double value) {
-    final newRatio = (actionPaneConfigurator?.normalizeRatio(value)) ?? value;
+    final newRatio = actionPaneConfigurator?.normalizeRatio(value) ?? value;
     if (_acceptRatio(newRatio) && newRatio != ratio) {
       direction.value = newRatio.sign.toInt();
       _animationController.value = newRatio.abs();
@@ -225,6 +225,21 @@ class SlidableController {
   /// Dispatches a new [EndGesture] determined by the given [velocity] and
   /// [direction].
   void dispatchEndGesture(double? velocity, GestureDirection direction) {
+    final isScrollingIntoDisabledEndActionPane = enableStartActionPane &&
+        !enableEndActionPane &&
+        this.direction.value == 0 &&
+        direction == GestureDirection.closing;
+    final isScrollingIntoDisabledStartActionPane = !enableStartActionPane &&
+        enableEndActionPane &&
+        this.direction.value == 0 &&
+        direction == GestureDirection.opening;
+    final isScrollingIntoDisabledPane = isScrollingIntoDisabledEndActionPane ||
+        isScrollingIntoDisabledStartActionPane;
+
+    if (isScrollingIntoDisabledPane) {
+      return;
+    }
+
     if (velocity == 0 || velocity == null) {
       endGesture.value = StillGesture(direction);
     } else if (velocity.sign == this.direction.value) {
@@ -302,6 +317,11 @@ class SlidableController {
   }
 
   /// Opens the [Slidable] to the given [ratio].
+  ///
+  /// The [ratio] sign will determine which direction the slidable should open.
+  /// ```dart
+  ///   controller.openTo(-1); //opens slidable all the way to the left side
+  /// ```  
   Future<void> openTo(
     double ratio, {
     Duration duration = _defaultMovementDuration,
