@@ -30,7 +30,6 @@ class Slidable extends StatefulWidget {
     this.dragStartBehavior = DragStartBehavior.down,
     this.useTextDirection = true,
     this.radiusContent,
-    this.controller,
     required this.child,
   });
 
@@ -43,8 +42,6 @@ class Slidable extends StatefulWidget {
   ///
   /// Defaults to true.
   final bool enabled;
-
-  final SlidableController? controller;
 
   /// Specifies to close this [Slidable] after the closest [Scrollable]'s
   /// position changed.
